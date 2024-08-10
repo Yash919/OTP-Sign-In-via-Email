@@ -38,7 +38,7 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<String> loginUser(@RequestBody Map<String, String> loginRequest){
+	public ResponseEntity<String> loginUser(@RequestBody Map<String, String> loginRequest) {
 		String email = loginRequest.get("email");
 		String password = loginRequest.get("password");
 
@@ -47,7 +47,7 @@ public class UserController {
 			User user = userOptional.get();
 			if (BCrypt.checkpw(password, user.getPassword())) {
 				otpService.generateOtp(email);
-				return ResponseEntity.status(HttpStatus.OK).body("/otp.html?email=" + email); // Redirect to /otp
+				return ResponseEntity.status(HttpStatus.OK).body("/otp?email=" + email); // Redirect to /otp
 			} else {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
 			}

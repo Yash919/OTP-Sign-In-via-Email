@@ -19,7 +19,7 @@ public class User {
 	@Column(unique = true, nullable = false)
 	private String email;
 	private String password;
-	@Column(length = 1000) // Making it larger to accommodate longer bios
+	@Column(length = 2000) // Making it larger to accommodate longer bios
 	private String bio;
 	private String linkedInUrl;
 	private String githubUrl;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
@@ -84,17 +84,16 @@
 	<div class="profile-card">
 		<img src="default-profile.png" alt="User Profile Picture">
 		<div class="profile-details">
-			<h2>John Doe</h2>
-			<p>Email: johndoe@example.com</p>
-			<p>Bio: A passionate developer...</p>
+			<h2 th:text="${user.username}">John Doe</h2>
+			<p>Email: <span th:text="${user.email}">johndoe@example.com</span></p>
+			<p>Bio: <span th:text="${user.bio}">A passionate developer...</span></p>
 			<div class="social-links">
-				<a href="#">LinkedIn</a>
-				<a href="#">GitHub</a>
-				<a href="#">Twitter</a>
+				<a th:href="@{${user.linkedInUrl}}">LinkedIn</a>
+				<a th:href="@{${user.githubUrl}}">GitHub</a>
+				<a th:href="@{${user.twitterUrl}}">Twitter</a>
 			</div>
 		</div>
 	</div>
-	<p>This is a placeholder dashboard. Customize it as needed.</p>
 </div>
 </body>
 

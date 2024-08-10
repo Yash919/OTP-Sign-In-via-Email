@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,8 +71,7 @@
 			});
 
 			if (response.ok) {
-				alert("OTP validated successfully!");
-				window.location.href = "/dashboard.html"; // Redirect to dashboard or desired page
+				window.location.href = "/dashboard?email=" + encodeURIComponent(email); // Redirect to dashboard with email parameter
 			} else {
 				const errorMsg = await response.text();
 				document.getElementById('error-message').innerText = "OTP validation failed: " + errorMsg;
