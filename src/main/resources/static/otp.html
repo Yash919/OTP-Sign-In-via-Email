@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>OTP Verification</title>
+	<style>
+		body {
+			font-family: 'Arial', sans-serif;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			background-color: #f4f4f4;
+			margin: 0;
+		}
+		.container {
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			width: 300px;
+			text-align: center;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		h1 {
+			font-size: 24px;
+			margin-bottom: 20px;
+			color: #333;
+		}
+		input[type="text"] {
+			width: 100%;
+			padding: 10px;
+			margin: 10px 0;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 16px;
+		}
+		button {
+			background-color: #28a745;
+			color: #fff;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 4px;
+			font-size: 16px;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+		button:hover {
+			background-color: #218838;
+		}
+		.alert {
+			margin-top: 15px;
+			color: red;
+			font-size: 14px;
+		}
+	</style>
+	<script>
+		async function validateOtp() {
+			const email = new URLSearchParams(window.location.search).get('email');
+			const otpCode = document.getElementById('otpCode').value;
+
+			const response = await fetch('/api/otp/validate', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ email, otpCode })
+			});
+
+			if (response.ok) {
+				alert("OTP validated successfully!");
+				window.location.href = "/dashboard.html"; // Redirect to dashboard or desired page
+			} else {
+				const errorMsg = await response.text();
+				document.getElementById('error-message').innerText = "OTP validation failed: " + errorMsg;
+			}
+		}
+	</script>
+</head>
+<body>
+<div class="container">
+	<h1>OTP Verification</h1>
+	<input type="text" id="otpCode" placeholder="Enter OTP" required><br>
+	<button onclick="validateOtp()">Verify OTP</button>
+	<p id="error-message" class="alert"></p>
+</div>
+</body>
+</html>
