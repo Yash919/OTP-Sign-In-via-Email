@@ -88,9 +88,9 @@
 			<p>Email: <span th:text="${user.email}">johndoe@example.com</span></p>
 			<p>Bio: <span th:text="${user.bio}">A passionate developer...</span></p>
 			<div class="social-links">
-				<a th:href="@{${user.linkedInUrl}}">LinkedIn</a>
-				<a th:href="@{${user.githubUrl}}">GitHub</a>
-				<a th:href="@{${user.twitterUrl}}">Twitter</a>
+				<a th:href="@{${user.linkedInUrl}}" target="_blank">LinkedIn</a>
+				<a th:href="@{${user.githubUrl}}" target="_blank">GitHub</a>
+				<a th:href="@{${user.twitterUrl}}" target="_blank">Twitter</a>
 			</div>
 		</div>
 	</div>
