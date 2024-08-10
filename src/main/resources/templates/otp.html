@@ -37,6 +37,7 @@
 			border: 1px solid #ccc;
 			border-radius: 4px;
 			font-size: 16px;
+			text-align: center;
 		}
 		button {
 			background-color: #28a745;
@@ -47,6 +48,8 @@
 			font-size: 16px;
 			cursor: pointer;
 			transition: background-color 0.3s;
+			width: 100%;
+			margin-top: 10px;
 		}
 		button:hover {
 			background-color: #218838;
@@ -58,6 +61,23 @@
 		}
 	</style>
 	<script>
+		async function generateOtp() {
+			const email = new URLSearchParams(window.location.search).get('email');
+
+			const response = await fetch('/api/otp/generate', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ email })
+			});
+
+			if (!response.ok) {
+				const errorMsg = await response.text();
+				document.getElementById('error-message').innerText = "Failed to generate OTP: " + errorMsg;
+			}
+		}
+
 		async function validateOtp() {
 			const email = new URLSearchParams(window.location.search).get('email');
 			const otpCode = document.getElementById('otpCode').value;
@@ -79,19 +99,21 @@
 		}
 
 		document.addEventListener("DOMContentLoaded", function() {
-		document.getElementById("otpCode").addEventListener("keypress", function(event) {
+			generateOtp(); // Trigger OTP generation when the page loads
+
+			document.getElementById("otpCode").addEventListener("keypress", function(event) {
 				if (event.key === "Enter") {
+					event.preventDefault(); // Prevent form submission on Enter
 					validateOtp();
 				}
 			});
 		});
-
 	</script>
 </head>
 <body>
 <div class="container">
 	<h1>OTP Verification</h1>
-	<input type="text" id="otpCode" placeholder="Enter OTP" required><br>
+	<input type="text" id="otpCode" placeholder="Enter OTP" required>
 	<button onclick="validateOtp()">Verify OTP</button>
 	<p id="error-message" class="alert"></p>
 </div>

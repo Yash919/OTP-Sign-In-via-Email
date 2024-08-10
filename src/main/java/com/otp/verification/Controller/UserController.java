@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.otp.verification.Entity.User;
@@ -46,7 +45,6 @@ public class UserController {
 		if (userOptional.isPresent()) {
 			User user = userOptional.get();
 			if (BCrypt.checkpw(password, user.getPassword())) {
-				otpService.generateOtp(email);
 				return ResponseEntity.status(HttpStatus.OK).body("/otp?email=" + email); // Redirect to /otp
 			} else {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
