@@ -25,6 +25,7 @@ public class OtpService {
 	private EmailService emailService;
 
 	private static final int OTP_EXPIRY_MINUTES = 5;
+	private static final int MAX_RESEND_ATTEMPTS = 3;
 
 
 	public void generateOtp(String mailId){
@@ -36,37 +37,47 @@ public class OtpService {
 			otp.setOtp(otpCode);
 			otp.setExpiryTime(LocalDateTime.now().plusMinutes(OTP_EXPIRY_MINUTES));
 			otp.setUser(user);
+			otp.setResendCount(1);
 
 			otpRepository.save(otp);
 
 			emailService.sendOtpEmail(user.getEmail(), otpCode);
 		}
 		else{
-			// Runtime Exception
 			throw new RuntimeException("User with email ID: " + mailId + " Not Found.");
 		}
 	}
 
-	public boolean validateOtp(String mailId, String otpCode){
-		Optional<User> userOptional = userRepository.findByEmail(mailId);
-		if (userOptional.isPresent()) {
-			User user = userOptional.get();
-			Optional<Otp> otpOptional = otpRepository.findByUserAndOtp(user, otpCode);
-			if(otpOptional.isPresent()){
-				Otp otp = otpOptional.get();
-				if (otp.getExpiryTime().isAfter(LocalDateTime.now())) {
-					otpRepository.delete(otp); // OTP is valid, delete it after successful validation
-					return true;
-				} else {
-					throw new RuntimeException("OTP has expired");
-				}
-			}
-			else {
-				throw new RuntimeException("Invalid OTP");
-			}
-		} else {
-			throw new RuntimeException("User not found");
+	public void resendOtp(String email){
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User with email ID: " + email + " Not Found."));
+		Otp otp = otpRepository.findByUser(user).orElseThrow(() -> new RuntimeException("No OTP found to resend"));
+
+		if (otp.getResendCount() > MAX_RESEND_ATTEMPTS) {
+			throw new RuntimeException("Max OTP resend attempts reached.");
 		}
+
+		otp.setOtp(generateRandomOtp());
+		otp.setExpiryTime(LocalDateTime.now().plusMinutes(OTP_EXPIRY_MINUTES));
+		otp.setResendCount(otp.getResendCount() + 1);
+
+		otpRepository.save(otp);
+
+		emailService.sendOtpEmail(user.getEmail(), otp.getOtp());
+
+	}
+
+	public boolean validateOtp(String email, String otpCode){
+		User user = userRepository.findByEmail(email)
+								  .orElseThrow(() -> new RuntimeException("User with email ID: " + email + " Not Found."));
+		Otp otp = otpRepository.findByUserAndOtp(user, otpCode)
+							   .orElseThrow(() -> new RuntimeException("Invalid OTP"));
+
+		if (otp.getExpiryTime().isBefore(LocalDateTime.now())) {
+			throw new RuntimeException("OTP has expired");
+		}
+
+		otpRepository.deleteAllByUser(user); // Delete all OTPs after successful login
+		return true;
 	}
 
 	private String generateRandomOtp(){

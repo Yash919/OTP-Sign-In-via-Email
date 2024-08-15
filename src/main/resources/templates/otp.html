@@ -78,6 +78,25 @@
 			}
 		}
 
+		async function resendOtp() {
+			const email = new URLSearchParams(window.location.search).get('email');
+
+			const response = await fetch('/api/otp/resend', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ email })
+			});
+
+			if (response.ok) {
+				document.getElementById('error-message').innerText = "OTP resent successfully.";
+			} else {
+				const errorMsg = await response.text();
+				document.getElementById('error-message').innerText = "Failed to resend OTP: " + errorMsg;
+			}
+		}
+
 		async function validateOtp() {
 			const email = new URLSearchParams(window.location.search).get('email');
 			const otpCode = document.getElementById('otpCode').value;
@@ -114,6 +133,7 @@
 <div class="container">
 	<h1>OTP Verification</h1>
 	<input type="text" id="otpCode" placeholder="Enter OTP" required>
+	<button onclick="resendOtp()">Resend OTP</button>
 	<button onclick="validateOtp()">Verify OTP</button>
 	<p id="error-message" class="alert"></p>
 </div>

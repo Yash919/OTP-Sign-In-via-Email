@@ -16,6 +16,7 @@ public class Otp {
 	private Long id;
 	private String otp;
 	private LocalDateTime expiryTime;
+	private int resendCount=0;
 	@ManyToOne
 	private User user;
 
@@ -41,6 +42,14 @@ public class Otp {
 
 	public void setExpiryTime(LocalDateTime expiryTime) {
 		this.expiryTime = expiryTime;
+	}
+
+	public int getResendCount() {
+		return resendCount;
+	}
+
+	public void setResendCount(int resendCount) {
+		this.resendCount = resendCount;
 	}
 
 	public User getUser() {

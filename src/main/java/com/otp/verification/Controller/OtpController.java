@@ -34,6 +34,17 @@ public class OtpController {
 
 	}
 
+	@PostMapping("/resend")
+	public ResponseEntity<String> resendOtp(@RequestBody Map<String, String> request) {
+		String email = request.get("email");
+		try {
+			otpService.resendOtp(email);
+			return ResponseEntity.status(HttpStatus.OK).body("OTP Resent Successfully.");
+		} catch (RuntimeException r) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(r.getMessage());
+		}
+	}
+
 	@PostMapping("/validate")
 	public ResponseEntity<String> validateOtp(@RequestBody Map<String, String> request) {
 		String email = request.get("email");
