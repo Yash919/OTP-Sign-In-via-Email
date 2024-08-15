@@ -55,9 +55,16 @@
 			background-color: #218838;
 		}
 		.alert {
-			margin-top: 15px;
+		margin-top: 15px;
+		font-size: 14px;
+		}
+
+		.alert-error {
 			color: red;
-			font-size: 14px;
+		}
+
+		.alert-success {
+			color: green;
 		}
 	</style>
 	<script>
@@ -89,11 +96,17 @@
 				body: JSON.stringify({ email })
 			});
 
+			const errorMessageElement = document.getElementById('error-message');
+
 			if (response.ok) {
-				document.getElementById('error-message').innerText = "OTP resent successfully.";
+				errorMessageElement.innerText = "OTP resent successfully.";
+				errorMessageElement.classList.remove('alert-error');
+				errorMessageElement.classList.add('alert-success');
 			} else {
 				const errorMsg = await response.text();
-				document.getElementById('error-message').innerText = "Failed to resend OTP: " + errorMsg;
+				errorMessageElement.innerText = "Failed to resend OTP: " + errorMsg;
+				errorMessageElement.classList.remove('alert-success');
+				errorMessageElement.classList.add('alert-error');
 			}
 		}
 
@@ -109,11 +122,15 @@
 				body: JSON.stringify({ email, otpCode })
 			});
 
+			const errorMessageElement = document.getElementById('error-message');
+
 			if (response.ok) {
 				window.location.href = "/dashboard?email=" + encodeURIComponent(email); // Redirect to dashboard with email parameter
 			} else {
 				const errorMsg = await response.text();
-				document.getElementById('error-message').innerText = "OTP validation failed: " + errorMsg;
+				errorMessageElement.innerText = "OTP validation failed: " + errorMsg;
+				errorMessageElement.classList.remove('alert-success');
+				errorMessageElement.classList.add('alert-error');
 			}
 		}
 
