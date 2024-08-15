@@ -37,7 +37,7 @@ public class OtpService {
 			otp.setOtp(otpCode);
 			otp.setExpiryTime(LocalDateTime.now().plusMinutes(OTP_EXPIRY_MINUTES));
 			otp.setUser(user);
-			otp.setResendCount(1);
+			otp.setResendCount(0);
 
 			otpRepository.save(otp);
 
@@ -48,11 +48,11 @@ public class OtpService {
 		}
 	}
 
-	public void resendOtp(String email){
+	public int resendOtp(String email){
 		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User with email ID: " + email + " Not Found."));
 		Otp otp = otpRepository.findByUser(user).orElseThrow(() -> new RuntimeException("No OTP found to resend"));
 
-		if (otp.getResendCount() > MAX_RESEND_ATTEMPTS) {
+		if (otp.getResendCount() >= MAX_RESEND_ATTEMPTS) {
 			throw new RuntimeException("Max OTP resend attempts reached.");
 		}
 
@@ -64,6 +64,7 @@ public class OtpService {
 
 		emailService.sendOtpEmail(user.getEmail(), otp.getOtp());
 
+		return otp.getResendCount();
 	}
 
 	public boolean validateOtp(String email, String otpCode){

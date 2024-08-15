@@ -99,7 +99,8 @@
 			const errorMessageElement = document.getElementById('error-message');
 
 			if (response.ok) {
-				errorMessageElement.innerText = "OTP resent successfully.";
+				const message = await response.text();
+				errorMessageElement.innerText = message;
 				errorMessageElement.classList.remove('alert-error');
 				errorMessageElement.classList.add('alert-success');
 			} else {

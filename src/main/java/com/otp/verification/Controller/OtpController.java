@@ -38,9 +38,11 @@ public class OtpController {
 	public ResponseEntity<String> resendOtp(@RequestBody Map<String, String> request) {
 		String email = request.get("email");
 		try {
-			otpService.resendOtp(email);
-			return ResponseEntity.status(HttpStatus.OK).body("OTP Resent Successfully.");
-		} catch (RuntimeException r) {
+			int resendCount = otpService.resendOtp(email);
+			String message = String.format("OTP has been resent successfully. You have requested a resend %d times.", resendCount);
+			return ResponseEntity.status(HttpStatus.OK).body(message);
+		}
+		catch (RuntimeException r) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(r.getMessage());
 		}
 	}
