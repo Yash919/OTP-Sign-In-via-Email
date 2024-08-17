@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Create User</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f7f7f7;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			margin: 0;
+		}
+
+		.container {
+			background-color: #ffffff;
+			padding: 50px;
+			border-radius: 118px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			width: 400px;
+		}
+
+		.container h2 {
+			text-align: center;
+			margin-bottom: 20px;
+			color: #333;
+		}
+
+		.form-group {
+			margin-bottom: 15px;
+		}
+
+		.form-group label {
+			display: block;
+			margin-bottom: 5px;
+			color: #333;
+			font-weight: bold;
+		}
+
+		.form-group input {
+			width: 100%;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+
+		.form-group textarea {
+			width: 100%;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+			resize: none;
+			height: 80px;
+		}
+
+		.form-group button {
+			width: 100%;
+			padding: 10px;
+			background-color: #007bff;
+			border: none;
+			border-radius: 4px;
+			color: white;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		.form-group button:hover {
+			background-color: #0056b3;
+		}
+
+		#message {
+			margin-top: 20px;
+			text-align: center;
+			font-size: 14px;
+		}
+
+		.success {
+			color: green;
+		}
+
+		.error {
+			color: red;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<h2>Create User</h2>
+	<form id="createUserForm">
+		<div class="form-group">
+			<label for="username">Username:</label>
+			<input type="text" id="username" name="username" required>
+		</div>
+		<div class="form-group">
+			<label for="email">Email:</label>
+			<input type="email" id="email" name="email" required>
+		</div>
+		<div class="form-group">
+			<label for="password">Password:</label>
+			<input type="password" id="password" name="password" required>
+		</div>
+		<div class="form-group">
+			<label for="bio">Bio:</label>
+			<textarea id="bio" name="bio"></textarea>
+		</div>
+		<div class="form-group">
+			<label for="linkedin">LinkedIn URL:</label>
+			<input type="url" id="linkedin" name="linkedInUrl">
+		</div>
+		<div class="form-group">
+			<label for="github">GitHub URL:</label>
+			<input type="url" id="github" name="githubUrl">
+		</div>
+		<div class="form-group">
+			<label for="twitter">Twitter URL:</label>
+			<input type="url" id="twitter" name="twitterUrl">
+		</div>
+		<div class="form-group">
+			<button type="submit">Create User</button>
+		</div>
+	</form>
+	<div id="message"></div>
+	<div id="countdown"></div>
+</div>
+<script>
+	document.getElementById("createUserForm").addEventListener("submit", function(event) {
+		event.preventDefault(); // Prevent default form submission
+
+		const formData = new FormData(event.target);
+		const data = Object.fromEntries(formData.entries());
+
+		fetch("/api/user/create", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => response.json()) // Parse JSON response
+		.then(response => {
+			const messageElement = document.getElementById("message");
+			const countdownElement = document.getElementById("countdown");
+
+			if (response.message.includes("User created successfully")) {
+				messageElement.textContent = response.message;
+				messageElement.className = "success";
+
+				let seconds = 5;
+				countdownElement.textContent = `Redirecting in ${seconds} seconds...`;
+
+				const interval = setInterval(() => {
+					seconds--;
+					countdownElement.textContent = `Redirecting in ${seconds} seconds...`;
+
+					if (seconds <= 0) {
+						clearInterval(interval);
+						window.location.href = "/login"; // Redirect to login page
+					}
+				}, 1000);
+			} else {
+				messageElement.textContent = response.message;
+				messageElement.className = "error";
+			}
+		})
+		.catch(error => {
+			console.error("Error:", error);
+		});
+	});
+</script>
+</body>
+</html>

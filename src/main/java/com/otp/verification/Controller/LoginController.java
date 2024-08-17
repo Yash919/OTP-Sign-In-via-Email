@@ -19,7 +19,10 @@ public class LoginController {
 	public String loginPage() {
 		return "login"; // This should map to src/main/resources/templates/login.html
 	}
-
+	@GetMapping("/createUser")
+	public String showCreateUserPage() {
+		return "createUser";
+	}
 	@GetMapping("/otp")
 	public String otpPage(@RequestParam("email") String email, Model model) {
 		model.addAttribute("email", email);

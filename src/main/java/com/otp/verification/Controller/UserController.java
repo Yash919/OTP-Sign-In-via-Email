@@ -1,5 +1,6 @@
 package com.otp.verification.Controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,12 +28,15 @@ public class UserController {
 	private OtpService otpService;
 
 	@PostMapping("/create")
-	public ResponseEntity<String> createUser(@RequestBody User user) {
+	public ResponseEntity<Map<String, String>> createUser(@RequestBody User user) {
+		Map<String, String> response = new HashMap<>();
 		try {
-			userService.createUser(user.getUsername(), user.getEmail(), user.getPassword(), user.getBio(), user.getLinkedInUrl(), user.getGithubUrl(), user.getTwitterUrl() );
-			return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
+			userService.createUser(user.getUsername(), user.getEmail(), user.getPassword(), user.getBio(), user.getLinkedInUrl(), user.getGithubUrl(), user.getTwitterUrl());
+			response.put("message", "User created successfully!");
+			return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+			response.put("message", e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 	}
 
