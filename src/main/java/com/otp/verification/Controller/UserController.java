@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.otp.verification.Entity.User;
@@ -56,6 +57,17 @@ public class UserController {
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 		}
+	}
+
+	@PostMapping("/forgot-password")
+	public ResponseEntity<?> processForgotPassword(@RequestParam("email") String email) {
+		String token = userService.createPasswordResetToken(email);
+		if (token == null) {
+			return ResponseEntity.badRequest().body("Email address not found.");
+		}
+		// Send the reset token via email
+		userService.sendPasswordResetEmail(email, token);
+		return ResponseEntity.ok("A password reset link has been sent to " + email);
 	}
 
 }

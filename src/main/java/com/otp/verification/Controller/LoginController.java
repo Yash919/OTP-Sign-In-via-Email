@@ -35,4 +35,8 @@ public class LoginController {
 		model.addAttribute("user", user);
 		return "dashboard"; // Ensure this matches the Thymeleaf template name
 	}
+	@GetMapping("/forgot-password")
+	public String showForgotPasswordPage() {
+		return "forgot-password"; // This should match the name of your HTML file
+	}
 }
