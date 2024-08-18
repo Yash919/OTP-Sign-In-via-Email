@@ -33,10 +33,16 @@ public class LoginController {
 		User user = userService.findByEmail(email)
 							   .orElseThrow(() -> new RuntimeException("User not found"));
 		model.addAttribute("user", user);
-		return "dashboard"; // Ensure this matches the Thymeleaf template name
+		return "dashboard";
 	}
 	@GetMapping("/forgot-password")
 	public String showForgotPasswordPage() {
-		return "forgot-password"; // This should match the name of your HTML file
+		return "forgot-password";
 	}
+
+	@GetMapping("/reset-password")
+	public String showResetPasswordPage() {
+		return "reset-password";
+	}
+
 }

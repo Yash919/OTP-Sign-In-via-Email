@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.otp.verification.Entity.User;
 import com.otp.verification.Service.OtpService;
+import com.otp.verification.Service.PasswordResetTokenService;
 import com.otp.verification.Service.UserService;
 
 @RestController
@@ -27,6 +28,9 @@ public class UserController {
 
 	@Autowired
 	private OtpService otpService;
+
+	@Autowired
+	private PasswordResetTokenService tokenService;
 
 	@PostMapping("/create")
 	public ResponseEntity<Map<String, String>> createUser(@RequestBody User user) {
@@ -68,6 +72,20 @@ public class UserController {
 		// Send the reset token via email
 		userService.sendPasswordResetEmail(email, token);
 		return ResponseEntity.ok("A password reset link has been sent to " + email);
+	}
+
+	@PostMapping("/reset-password")
+	public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
+
+		String token = request.get("token");
+		String newPassword = request.get("newPassword");
+		boolean isReset = tokenService.resetPassword(token, newPassword);
+
+		if (isReset) {
+			return ResponseEntity.ok("Password has been reset successfully.");
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token.");
+		}
 	}
 
 }

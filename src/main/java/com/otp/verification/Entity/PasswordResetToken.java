@@ -63,4 +63,8 @@ public class PasswordResetToken {
 	public void setExpirationDate(LocalDateTime expirationDate) {
 		this.expirationDate = expirationDate;
 	}
+
+	public boolean isExpired() {
+		return LocalDateTime.now().isAfter(this.expirationDate);
+	}
 }
