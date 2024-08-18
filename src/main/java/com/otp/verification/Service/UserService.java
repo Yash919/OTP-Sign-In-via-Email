@@ -64,9 +64,22 @@ public class UserService {
 			return null; // User not found
 		}
 		User user = userOptional.get();
-		String token = UUID.randomUUID().toString(); // Generate a unique token
-		PasswordResetToken resetToken = new PasswordResetToken(token, user, LocalDateTime.now().plusHours(tokenExpirationTime));
-		tokenRepository.save(resetToken);
+		Optional<PasswordResetToken> existingTokenOptional = tokenRepository.findByUser(user);
+
+		// Generate a new token
+		String token = UUID.randomUUID().toString();
+		LocalDateTime expirationDate = LocalDateTime.now().plusHours(1);
+
+		if (existingTokenOptional.isPresent()) {
+			PasswordResetToken existingToken = existingTokenOptional.get();
+			existingToken.setToken(token);
+			existingToken.setExpirationDate(expirationDate);
+			tokenRepository.save(existingToken); // Update existing token
+		} else {
+			PasswordResetToken newToken = new PasswordResetToken(token, user, expirationDate);
+			tokenRepository.save(newToken); // Save new token
+		}
+
 		return token;
 	}
 
