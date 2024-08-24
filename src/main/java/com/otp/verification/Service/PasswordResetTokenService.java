@@ -18,6 +18,8 @@ public class PasswordResetTokenService {
 	private PasswordResetTokenRepository passwordResetTokenRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private EmailService emailService;
 
 	public PasswordResetToken validatePasswordResetToken(String token) {
 		Optional<PasswordResetToken> tokenOptional = passwordResetTokenRepository.findByToken(token);
@@ -42,8 +44,21 @@ public class PasswordResetTokenService {
 			userRepository.save(user);
 			// Optionally, delete the token after successful password reset
 			passwordResetTokenRepository.delete(resetToken);
+			// Send password update confirmation email to the user
+			sendPasswordUpdateConfirmationEmail(user.getEmail(), user.getUsername());
 			return true;
 		}
 		return false;
+	}
+
+	private void sendPasswordUpdateConfirmationEmail(String email, String username) {
+
+		String subject = "Your Password Has Been Successfully Updated";
+		String body = "Dear " + username + ",\n\n"
+				+ "We wanted to let you know that your password was updated successfully. "
+				+ "If you did not make this change, please contact our support team immediately.\n\n"
+				+ "Thank you,\n"
+				+ "Yash a.k.a (🦁)";
+		emailService.sendEmail(email, subject, body);
 	}
 }
