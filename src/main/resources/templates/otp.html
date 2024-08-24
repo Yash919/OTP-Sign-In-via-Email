@@ -55,8 +55,8 @@
 			background-color: #218838;
 		}
 		.alert {
-		margin-top: 15px;
-		font-size: 14px;
+			margin-top: 15px;
+			font-size: 14px;
 		}
 
 		.alert-error {
@@ -81,7 +81,9 @@
 
 			if (!response.ok) {
 				const errorMsg = await response.text();
-				document.getElementById('error-message').innerText = "Failed to generate OTP: " + errorMsg;
+				const errorMessageElement = document.getElementById('error-message');
+				errorMessageElement.innerText = "Failed to generate OTP: " + errorMsg;
+				errorMessageElement.classList.add('alert-error');
 			}
 		}
 

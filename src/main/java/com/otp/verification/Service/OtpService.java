@@ -32,18 +32,27 @@ public class OtpService {
 		Optional<User> userOptional = userRepository.findByEmail(mailId);
 		if(userOptional.isPresent()){
 			User user = userOptional.get();
-			String otpCode = generateRandomOtp();
-			Otp otp = new Otp();
-			otp.setOtp(otpCode);
-			otp.setExpiryTime(LocalDateTime.now().plusMinutes(OTP_EXPIRY_MINUTES));
-			otp.setUser(user);
-			otp.setResendCount(0);
 
-			otpRepository.save(otp);
+			Optional<Otp> existingOtpOptional = otpRepository.findByUser(user);
+			if (existingOtpOptional.isPresent()) {
+				Otp existingOtp = existingOtpOptional.get();
 
-			emailService.sendOtpEmail(user.getEmail(), user.getUsername(), otpCode);
-		}
-		else{
+				// Check if the resendCount is 3 and the OTP has expired
+				if (existingOtp.getResendCount() == 3) {
+					throw new RuntimeException("Maximum OTP resend attempts reached. Please try again tomorrow.");
+				}
+			}
+
+			// Create and save a new OTP
+			Otp newOtp = new Otp();
+			newOtp.setOtp(generateRandomOtp());
+			newOtp.setExpiryTime(LocalDateTime.now().plusMinutes(OTP_EXPIRY_MINUTES));
+			newOtp.setUser(user);
+			newOtp.setResendCount(0);
+			otpRepository.save(newOtp);
+			emailService.sendOtpEmail(user.getEmail(), user.getUsername(), newOtp.getOtp());
+
+		} else {
 			throw new RuntimeException("User with email ID: " + mailId + " Not Found.");
 		}
 	}

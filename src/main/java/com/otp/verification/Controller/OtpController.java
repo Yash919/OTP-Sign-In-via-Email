@@ -24,12 +24,16 @@ public class OtpController {
 
 	@PostMapping("/generate")
 	public ResponseEntity<String> generateOtp(@RequestBody Map<String, String> request) {
-		try{
-		String email = request.get("email");
-		otpService.generateOtp(email);
-		return ResponseEntity.status(HttpStatus.CREATED).body("OTP Generated Successfully.");
-		} catch (RuntimeException r){
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(r.getMessage());
+		try {
+			String email = request.get("email");
+			otpService.generateOtp(email);
+			return ResponseEntity.status(HttpStatus.CREATED).body("OTP Generated Successfully.");
+		} catch (RuntimeException r) {
+			// Return a 400 Bad Request status with the exception message
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(r.getMessage());
+		} catch (Exception e) {
+			// Handle any other unexpected exceptions with a generic message
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred. Please try again later.");
 		}
 
 	}
