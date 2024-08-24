@@ -84,10 +84,16 @@ public class UserService {
 	}
 
 	public void sendPasswordResetEmail(String email, String token) {
-		String resetLink = "http://localhost:8080/reset-password?token=" + token;
-		String subject = "Password Reset Request";
-		String body = "To reset your password, please click the following link: " + resetLink;
-		emailService.sendEmail(email, subject, body);
+		Optional<User> userOptional = userRepository.findByEmail(email);
+
+		if (userOptional.isPresent()) {
+			User user = userOptional.get();
+			String userName = user.getUsername();
+
+			emailService.sendPasswordResetEmail(email, userName, token);
+		} else {
+			throw new IllegalArgumentException("User with the given email does not exist");
+		}
 	}
 
 }

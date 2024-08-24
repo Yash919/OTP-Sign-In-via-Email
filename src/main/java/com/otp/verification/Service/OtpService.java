@@ -41,7 +41,7 @@ public class OtpService {
 
 			otpRepository.save(otp);
 
-			emailService.sendOtpEmail(user.getEmail(), otpCode);
+			emailService.sendOtpEmail(user.getEmail(), user.getUsername(), otpCode);
 		}
 		else{
 			throw new RuntimeException("User with email ID: " + mailId + " Not Found.");
@@ -62,7 +62,7 @@ public class OtpService {
 
 		otpRepository.save(otp);
 
-		emailService.sendOtpEmail(user.getEmail(), otp.getOtp());
+		emailService.sendOtpEmail(user.getEmail(), user.getUsername(), otp.getOtp());
 
 		return otp.getResendCount();
 	}
