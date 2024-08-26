@@ -58,13 +58,26 @@
 			margin-top: 15px;
 			font-size: 14px;
 		}
-
 		.alert-error {
 			color: red;
 		}
-
 		.alert-success {
 			color: green;
+		}
+		.spinner {
+			border: 4px solid rgba(0, 0, 0, 0.1);
+			border-left-color: #28a745;
+			border-radius: 50%;
+			width: 30px;
+			height: 30px;
+			animation: spin 1s linear infinite;
+			display: none;
+			margin-top: 20px;
+		}
+
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
 		}
 	</style>
 	<script>
@@ -89,6 +102,10 @@
 
 		async function resendOtp() {
 			const email = new URLSearchParams(window.location.search).get('email');
+			const spinner = document.getElementById('spinner');
+			const errorMessageElement = document.getElementById('error-message');
+
+			spinner.style.display = 'block'; // Show spinner
 
 			const response = await fetch('/api/otp/resend', {
 				method: 'POST',
@@ -98,7 +115,7 @@
 				body: JSON.stringify({ email })
 			});
 
-			const errorMessageElement = document.getElementById('error-message');
+			spinner.style.display = 'none'; // Hide spinner
 
 			if (response.ok) {
 				const message = await response.text();
@@ -155,6 +172,7 @@
 	<input type="text" id="otpCode" placeholder="Enter OTP" required>
 	<button onclick="resendOtp()">Resend OTP</button>
 	<button onclick="validateOtp()">Verify OTP</button>
+	<div id="spinner" class="spinner"></div>
 	<p id="error-message" class="alert"></p>
 </div>
 </body>
