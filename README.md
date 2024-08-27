@@ -108,14 +108,26 @@ This project is a Spring Boot application that provides user authentication usin
 <img width="1038" alt="image" src="https://github.com/user-attachments/assets/2ab539e2-8082-4138-8cc9-bf5ffa5ea71e">
 
 ## Screenshots
+
+#### Create User Page
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/97d01fa0-b511-42f4-988f-2c2cdac37be3">
+
 #### Login Page
-<img width="1511" alt="image" src="https://github.com/user-attachments/assets/10cec272-c949-4c1a-93bd-5cd79d37640b">
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/1a9533f5-1684-43e8-8ec6-3bb24dc3dd6b">
+
+#### Forgot Password Page
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/4ee31f09-beac-4fd6-82e9-816424f8297c">
+
+#### Reset Password Page
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/eb2a5604-f9e1-4ab8-b659-8634e55eec60">
 
 #### OTP Verification Page
-<img width="1512" alt="image" src="https://github.com/user-attachments/assets/cb32b933-1db9-440d-a522-b7ed19e296f0">
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/0f6b062b-081e-4683-99bd-45033be38a46">
 
 #### Dashboard Page
-<img width="1512" alt="image" src="https://github.com/user-attachments/assets/3f9724c6-0ba6-4c51-addd-5c93ebcf01bb">
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/fdb1e2aa-e031-42fd-a842-0bdb90b04931">
+
+
 
 <br><br>
 
