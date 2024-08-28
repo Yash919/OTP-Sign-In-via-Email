@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.otp.verification.Entity.Otp;
@@ -94,5 +95,11 @@ public class OtpService {
 		Random random = new Random();
 		int otp = 100000 + random.nextInt(900000);
 		return String.valueOf(otp);
+	}
+
+	@Scheduled(cron = "0 0 0 * * ?")
+	public void deleteExpiredOtps(){
+		LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+		otpRepository.deleteByExpiryTimeBefore(oneDayAgo);
 	}
 }
